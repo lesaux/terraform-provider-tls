@@ -263,29 +263,14 @@ func (r *certRequestResource) Create(ctx context.Context, req resource.CreateReq
 	// Parse the Private Key PEM
 	tflog.Debug(ctx, "Parsing Private Key PEM")
 
-	pemString := newState.PrivateKeyPEM.ValueString()
+	var pemString string
 	if newState.PrivateKeyPEM.IsNull() || newState.PrivateKeyPEM.IsUnknown() {
-		// Use the value from the configuration (Plan) for WriteOnly attribute
-		if !newState.PrivateKeyPEMWO.IsNull() && !newState.PrivateKeyPEMWO.IsUnknown() {
-			pemString = newState.PrivateKeyPEMWO.ValueString()
+		var configVal types.String
+		req.Config.GetAttribute(ctx, path.Root("private_key_pem_wo"), &configVal)
+		if !configVal.IsNull() && !configVal.IsUnknown() {
+			pemString = configVal.ValueString()
 		} else {
-			// Try checking the directly retrieved attribute from Config as a fallback
-			var configVal types.String
-			req.Config.GetAttribute(ctx, path.Root("private_key_pem_wo"), &configVal)
-			tflog.Debug(ctx, "Config Attribute check", map[string]interface{}{
-				"Null":    configVal.IsNull(),
-				"Unknown": configVal.IsUnknown(),
-			})
-
-			if !configVal.IsNull() && !configVal.IsUnknown() {
-				pemString = configVal.ValueString()
-			} else {
-				res.Diagnostics.AddError(
-					"Missing Private Key",
-					fmt.Sprintf("Neither private_key_pem nor private_key_pem_wo was provided or known. Plan WO Null: %v, Config WO Null: %v", newState.PrivateKeyPEMWO.IsNull(), configVal.IsNull()),
-				)
-				return
-			}
+			pemString = newState.PrivateKeyPEM.ValueString()
 		}
 	}
 
