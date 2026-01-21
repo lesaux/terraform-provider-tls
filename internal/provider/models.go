@@ -52,12 +52,12 @@ type certRequestResourceModel struct {
 	IPAddresses            types.List   `tfsdk:"ip_addresses"`
 	URIs                   types.List   `tfsdk:"uris"`
 	PrivateKeyPEM          types.String `tfsdk:"private_key_pem"`
-	PrivateKeyPEMWO 	   types.String `tfsdk:"private_key_pem_wo"`
+	PrivateKeyPEMWO        types.String `tfsdk:"private_key_pem_wo"`
 	PrivateKeyPEMWOVersion types.String `tfsdk:"private_key_pem_wo_version"`
-	KeyAlgorithm   		   types.String `tfsdk:"key_algorithm"`
-	CertRequestPEM 		   types.String `tfsdk:"cert_request_pem"`
-	Subject        		   types.List   `tfsdk:"subject"` //< certificateSubjectModel
-	ID             		   types.String `tfsdk:"id"`
+	KeyAlgorithm           types.String `tfsdk:"key_algorithm"`
+	CertRequestPEM         types.String `tfsdk:"cert_request_pem"`
+	Subject                types.List   `tfsdk:"subject"` //< certificateSubjectModel
+	ID                     types.String `tfsdk:"id"`
 }
 
 type certificateSubjectModel struct {
