@@ -508,3 +508,51 @@ func testStringValue(sPtr *string) string {
 
 	return *sPtr
 }
+
+func TestResourceCertRequest_PrivateKeyPEM_WriteOnly(t *testing.T) {
+	r.UnitTest(t, r.TestCase{
+		ProtoV5ProviderFactories: protoV5ProviderFactories(),
+		Steps: []r.TestStep{
+			{
+				Config: `
+					resource "tls_private_key" "test" {
+						algorithm = "ED25519"
+					}
+					resource "tls_cert_request" "test" {
+						subject {
+							common_name = "example.com"
+						}
+						private_key_pem_wo = tls_private_key.test.private_key_pem
+						private_key_pem_wo_version = "1"
+					}
+                `,
+				Check: r.ComposeAggregateTestCheckFunc(
+					tu.TestCheckPEMFormat("tls_cert_request.test", "cert_request_pem", PreambleCertificateRequest.String()),
+					tu.TestCheckPEMCertificateRequestSubject("tls_cert_request.test", "cert_request_pem", &pkix.Name{
+						CommonName: "example.com",
+					}),
+				),
+			},
+			{
+				Config: `
+					resource "tls_private_key" "test" {
+						algorithm = "ED25519"
+					}
+					resource "tls_cert_request" "test" {
+						subject {
+							common_name = "example.com"
+						}
+						private_key_pem_wo = tls_private_key.test.private_key_pem
+						private_key_pem_wo_version = "2"
+					}
+                `,
+				Check: r.ComposeAggregateTestCheckFunc(
+					tu.TestCheckPEMFormat("tls_cert_request.test", "cert_request_pem", PreambleCertificateRequest.String()),
+					tu.TestCheckPEMCertificateRequestSubject("tls_cert_request.test", "cert_request_pem", &pkix.Name{
+						CommonName: "example.com",
+					}),
+				),
+			},
+		},
+	})
+}
