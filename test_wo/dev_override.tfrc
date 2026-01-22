@@ -1,0 +1,6 @@
+provider_installation {
+  dev_overrides {
+    "hashicorp/tls" = "/Users/pieriglesaux/GIT/terraform-provider-tls"
+  }
+  direct {}
+}
