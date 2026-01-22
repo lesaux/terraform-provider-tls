@@ -264,13 +264,13 @@ func (r *certRequestResource) Create(ctx context.Context, req resource.CreateReq
 	tflog.Debug(ctx, "Parsing Private Key PEM")
 
 	var pemString string
-	if newState.PrivateKeyPEM.IsNull() || newState.PrivateKeyPEM.IsUnknown() {
+	if !newState.PrivateKeyPEM.IsNull() && !newState.PrivateKeyPEM.IsUnknown() {
+		pemString = newState.PrivateKeyPEM.ValueString()
+	} else {
 		var configVal types.String
 		req.Config.GetAttribute(ctx, path.Root("private_key_pem_wo"), &configVal)
 		if !configVal.IsNull() && !configVal.IsUnknown() {
 			pemString = configVal.ValueString()
-		} else {
-			pemString = newState.PrivateKeyPEM.ValueString()
 		}
 	}
 
