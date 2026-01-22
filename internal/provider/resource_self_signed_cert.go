@@ -76,8 +76,7 @@ func (r *selfSignedCertResource) Schema(_ context.Context, req resource.SchemaRe
 				},
 				Description: "Private key in [PEM (RFC 1421)](https://datatracker.ietf.org/doc/html/rfc1421) format, " +
 					"that the certificate will belong to. " +
-					"This attribute is write-only and will not be stored in the state." +
-					" **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.",
+					"This attribute is write-only and will not be stored in the state.",
 			},
 			"private_key_pem_wo_version": schema.StringAttribute{
 				Optional: true,
